@@ -45,16 +45,16 @@ if($auth){
 }
 
 write-output "`r`ncreating mongodb config file"
-[System.IO.File]::AppendAllText("$mongoDbConfigPath", "storage:`r`n    dbPath: $mongoDbPath\data\db`r`nsystemLog:`r`n    destination: file`r`n    path: $mongoDbPath\log\mongo.log`r`n    logAppend: true`r`nreplication:`r`n    replSetName: myitsocial`r`nnet:`r`n    http:`r`n        enabled: false")
+[System.IO.File]::AppendAllText("$mongoDbConfigPath", "storage:`r`n    dbPath: $mongoDbPath\data\db`r`nsystemLog:`r`n    destination: file`r`n    path: $mongoDbPath\log\mongo.log`r`n    logAppend: true`r`nreplication:`r`n    replSetName: mongo-replica`r`nnet:`r`n    http:`r`n        enabled: false")
 if($primaryhost){
 	if($auth && $password){
 		[System.IO.File]::AppendAllText("$mongoDbConfigPath", "`r`nsecurity:`r`n    keyFile: $mongoDbPath\mongo.key")
 	}
 }
 
-#write-output "downloading mongodb from $url please wait"
-# $webClient = New-Object System.Net.WebClient 
-# $webClient.DownloadFile($url,$zipFile)
+write-output "downloading mongodb from $url please wait"
+$webClient = New-Object System.Net.WebClient 
+$webClient.DownloadFile($url,$zipFile)
 
 write-output "Copying mongodb binaries"
 Copy-Item "mongo.zip" $mongoDbPath
@@ -87,10 +87,6 @@ if($primary) {
 		write-output "Settingup Mongodb replica set with auth"
 		[System.IO.File]::AppendAllText("$replicaScript", "db = db.getSiblingDB('admin');`r`ndb.createUser({user: `"siteUserAdmin`", pwd: `"$password`", roles: [ { role: `"userAdminAnyDatabase`", db: `"admin`" } ]});")
 		[System.IO.File]::AppendAllText("$replicaScript", "`r`ndb.auth(`"siteUserAdmin`", `"$password`");")
-		[System.IO.File]::AppendAllText("$replicaScript", "`r`ndb.createUser({user: `"siteRootAdmin`",	pwd: `"$password`", roles: [{ role: `"root`", db: `"admin`" }]});")
-		[System.IO.File]::AppendAllText("$replicaScript", "`r`ndb = db.getSiblingDB('social');")
-		[System.IO.File]::AppendAllText("$replicaScript", "`r`ndb.createUser({user: `"socialUser`",	pwd: `"$password`", roles: [{ role: `"dbOwner`", db: `"social`" }]});")
-		[System.IO.File]::AppendAllText("$replicaScript", "`r`ndb.createUser({user: `"esUser`",	pwd: `"$password`", roles: [{ role: `"read`", db: `"social`" }, { role: `"read`", db: `"admin`"}, { role: `"read`", db: `"local`"}]});")
 		& net start mongodb
 		Start-Sleep -s 10
 		& $mongoDBPath\bin\mongo.exe $replicaScript	
