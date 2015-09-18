@@ -1,0 +1,161 @@
+################################################################################################################
+On server 1: Primary
+################################################################################################################
+PS C:\Users\Administrator\Desktop\Mongodb scripts> .\mongodb.ps1 -path "d:\m1" -primary
+Installing MongoDB at 'd:\m1'
+creating required directories
+
+
+    Directory: D:\
+
+
+Mode                LastWriteTime     Length Name
+----                -------------     ------ ----
+d----         8/14/2015   1:32 PM            m1
+
+
+    Directory: D:\m1
+
+
+Mode                LastWriteTime     Length Name
+----                -------------     ------ ----
+d----         8/14/2015   1:32 PM            log
+d----         8/14/2015   1:32 PM            data
+
+
+    Directory: D:\m1\data
+
+
+Mode                LastWriteTime     Length Name
+----                -------------     ------ ----
+d----         8/14/2015   1:32 PM            db
+
+creating mongodb config file
+Copying mongodb binaries
+unziping files...
+removing unwanted files...
+installing mongodb service
+Starting Mongodb
+The MongoDB service is starting.
+The MongoDB service was started successfully.
+
+Settingup Mongodb replica set
+2015-08-14T13:33:03.239+0530 Hotfix KB2731284 or later update is not installed, will zero-out data files
+MongoDB shell version: 2.6.11
+connecting to: test
+
+
+PS C:\Users\Administrator\Desktop\Mongodb scripts> D:\m1\bin\mongo.exe
+2015-08-14T13:34:44.686+0530 Hotfix KB2731284 or later update is not installed, will zero-out data files
+MongoDB shell version: 2.6.11
+connecting to: test
+myitsocial:PRIMARY> rs.status()
+{
+        "set" : "myitsocial",
+        "date" : ISODate("2015-08-14T08:04:52Z"),
+        "myState" : 1,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "clm-pun-006638:27017",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 131,
+                        "optime" : Timestamp(1439539415, 1),
+                        "optimeDate" : ISODate("2015-08-14T08:03:35Z"),
+                        "electionTime" : Timestamp(1439539415, 2),
+                        "electionDate" : ISODate("2015-08-14T08:03:35Z"),
+                        "self" : true
+                }
+        ],
+        "ok" : 1
+}
+myitsocial:PRIMARY>
+
+################################################################################################################
+On server2: adding Secondary
+################################################################################################################
+PS C:\Users\Administrator\Desktop\Mongodb scripts> .\mongodb.ps1 -path "d:\m3" -primaryhost "clm-pun-006638"
+Installing MongoDB at 'd:\m3'
+creating required directories
+
+
+    Directory: D:\
+
+
+Mode                LastWriteTime     Length Name
+----                -------------     ------ ----
+d----         8/14/2015   2:03 PM            m3
+
+
+    Directory: D:\m3
+
+
+Mode                LastWriteTime     Length Name
+----                -------------     ------ ----
+d----         8/14/2015   2:03 PM            log
+d----         8/14/2015   2:03 PM            data
+
+
+    Directory: D:\m3\data
+
+
+Mode                LastWriteTime     Length Name
+----                -------------     ------ ----
+d----         8/14/2015   2:03 PM            db
+
+creating mongodb config file
+Copying mongodb binaries
+unziping files...
+removing unwanted files...
+installing mongodb service
+Starting Mongodb
+The MongoDB service is starting.
+The MongoDB service was started successfully.
+
+2015-08-14T14:04:13.035+0530 Hotfix KB2731284 or later update is not installed, will zero-out data files
+MongoDB shell version: 2.6.11
+connecting to: clm-pun-006638:27017/test
+
+
+PS C:\Users\Administrator\Desktop\Mongodb scripts> D:\m1\bin\mongo.exe
+2015-08-14T14:04:30.280+0530 Hotfix KB2731284 or later update is not installed, will zero-out data files
+MongoDB shell version: 2.6.11
+connecting to: test
+myitsocial:PRIMARY> rs.status()
+{
+        "set" : "myitsocial",
+        "date" : ISODate("2015-08-14T08:34:35Z"),
+        "myState" : 1,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "clm-pun-006638:27017",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 45,
+                        "optime" : Timestamp(1439541253, 1),
+                        "optimeDate" : ISODate("2015-08-14T08:34:13Z"),
+                        "electionTime" : Timestamp(1439541231, 1),
+                        "electionDate" : ISODate("2015-08-14T08:33:51Z"),
+                        "self" : true
+                },
+                {
+                        "_id" : 1,
+                        "name" : "CLM-PUN-006638:37017",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 22,
+                        "optime" : Timestamp(1439541253, 1),
+                        "optimeDate" : ISODate("2015-08-14T08:34:13Z"),
+                        "lastHeartbeat" : ISODate("2015-08-14T08:34:35Z"),
+                        "lastHeartbeatRecv" : ISODate("2015-08-14T08:34:33Z"),
+                        "pingMs" : 0,
+                        "syncingTo" : "clm-pun-006638:27017"
+                }
+        ],
+        "ok" : 1
+}
