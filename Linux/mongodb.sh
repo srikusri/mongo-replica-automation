@@ -42,7 +42,7 @@ fi
 
 echo "Installing MongoDB at '$MONGOPATH'"
 
-#wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.6.11.tgz
+wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.6.11.tgz
 tar -xf "mongodb-linux-x86_64-2.6.11.tgz"
 mkdir -p /var/mongodb/
 mv ./mongodb-linux-x86_64-2.6.11/* /var/mongodb/
