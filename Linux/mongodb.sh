@@ -70,7 +70,7 @@ fi
 
 echo "creating mongo config"
 printf "storage:\n    dbPath: %s/data\nsystemLog:\n    destination: file\n    path: %s/log/mongod.log\n    logAppend: true
-\nprocessManagement:\n    fork: true\nreplication:\n    replSetName: myitsocial\nnet:\n    http:\n        enabled: false" "$MONGOPATH" "$MONGOPATH" > /etc/mongod.conf
+\nprocessManagement:\n    fork: true\nreplication:\n    replSetName: mongo-replica\nnet:\n    http:\n        enabled: false" "$MONGOPATH" "$MONGOPATH" > /etc/mongod.conf
 if [ ! -z "$PRIMARYHOST" ]
 then
 	if [ $AUTH = 1 ]
@@ -104,9 +104,6 @@ then
 			printf "db = db.getSiblingDB('admin');\ndb.createUser({user: \"siteUserAdmin\", pwd: \"%s\", roles: [ { role: \"userAdminAnyDatabase\", db: \"admin\" } ]});" "$PASSWORD"
 			printf "\ndb.auth(\"siteUserAdmin\", \"%s\");" "$PASSWORD"
 			printf "\ndb.createUser({user: \"siteRootAdmin\",	pwd: \"%s\", roles: [{ role: \"root\", db: \"admin\" }]});" "$PASSWORD"
-			printf "\ndb = db.getSiblingDB('social');"
-			printf "\ndb.createUser({user: \"socialUser\",	pwd: \"%s\", roles: [{ role: \"dbOwner\", db: \"social\" }]});" "$PASSWORD"
-			printf "\ndb.createUser({user: \"esUser\",	pwd: \"%s\", roles: [{ role: \"read\", db: \"social\" }, { role: \"read\", db: \"admin\" }, { role: \"read\", db: \"local\" }]});" "$PASSWORD"
 		} >"$MONGOPATH/replica.js"
 		/etc/init.d/mongodb start
 		sleep 10s
